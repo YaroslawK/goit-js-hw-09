@@ -4,8 +4,8 @@ const emailInput = form.querySelector('label input');
 
   form.addEventListener('input', () => {
     const currentState = {
-      email: emailInput.value,
-      message: textarea.value
+      email: emailInput.value.trim(),
+      message: textarea.value.trim()
     };
     localStorage.setItem('feedback-form-state', JSON.stringify(currentState));
   });
@@ -29,14 +29,3 @@ function handleSubmit(event) {
   form.reset();
   localStorage.removeItem('feedback-form-state');
 }
-
-form.addEventListener('input', event => {
-  const formData = new FormData(form);
-  const formValues = {};
-
-  formData.forEach((value, key) => {
-    formValues[key] = value.trim();
-  });
-
-  localStorage.setItem('feedback-form-state', JSON.stringify(formValues));
-});
