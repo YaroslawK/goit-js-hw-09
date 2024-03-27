@@ -1,48 +1,42 @@
-const storageKeyMessage = 'feedback-msg';
-const storageKeyEmail = 'email'
-
 const form = document.querySelector('.feedback-form');
-
-
 const textarea = form.querySelector('textarea');
+const emailInput = form.querySelector('label input');
 
-const emailInput = form.querySelector('label input')
-emailInput.addEventListener('input', onEmailAreaInput);
+  form.addEventListener('input', () => {
+    const currentState = {
+      email: emailInput.value,
+      message: textarea.value
+    };
+    localStorage.setItem('feedback-form-state', JSON.stringify(currentState));
+  });
 
-function onEmailAreaInput(event) {
-  const email = event.target.value
-  localStorage.setItem(storageKeyEmail, email);
-}
-
-textarea.addEventListener('input', onTextAreaInput);
-
-
-function onTextAreaInput(event) {
-  const message = event.target.value;
-  localStorage.setItem(storageKeyMessage, message);
-}
-
-function populateTextArea() {
-  const savedMessage = localStorage.getItem(storageKeyMessage);
-  const savedEmail = localStorage.getItem(storageKeyEmail);
-  if (savedMessage || savedEmail) {
-    textarea.value = savedMessage;
-    emailInput.value = savedEmail;
+const savedState = JSON.parse(localStorage.getItem('feedback-form-state'));
+  if (savedState) {
+    emailInput.value = savedState.email;
+    textarea.value = savedState.message;
   }
-}
 
-populateTextArea()
 
 form.addEventListener('submit', handleSubmit);
 function handleSubmit(event) {
   event.preventDefault();
   
-  localStorage.removeItem(storageKeyEmail);
-  localStorage.removeItem(storageKeyMessage);
   const formData = {
       email: emailInput.value,
       message: textarea.value
   };
   console.log(formData);
-  event.currentTarget.reset();
+  form.reset();
+  localStorage.removeItem('feedback-form-state');
 }
+
+form.addEventListener('input', event => {
+  const formData = new FormData(form);
+  const formValues = {};
+
+  formData.forEach((value, key) => {
+    formValues[key] = value.trim();
+  });
+
+  localStorage.setItem('feedback-form-state', JSON.stringify(formValues));
+});
