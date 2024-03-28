@@ -14,16 +14,19 @@ const savedState = JSON.parse(localStorage.getItem('feedback-form-state'));
   if (savedState) {
     emailInput.value = savedState.email;
     textarea.value = savedState.message;
-  }
+}
+  
 
 
 form.addEventListener('submit', handleSubmit);
 function handleSubmit(event) {
   event.preventDefault();
-  
+  if (!emailInput.value.trim() || !textarea.value.trim()) {
+    alert('Заповніть форму');
+  }
   const formData = {
-      email: emailInput.value,
-      message: textarea.value
+      email: emailInput.value.trim(),
+      message: textarea.value.trim()
   };
   console.log(formData);
   form.reset();
